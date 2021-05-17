@@ -1,0 +1,131 @@
+<template>
+    <div class="buttonBar">
+        <div class="button_icon_Edit">
+            <lightning-button-icon icon-name="utility:edit" variant="border-filled" alternative-text="Edit" class="slds-m-left_xx-small" title="Edit" onclick={handleEditSomeOpportunities}></lightning-button-icon>
+        </div>
+        <div>
+            <lightning-button label="New" title="Create new Opportunity action" onclick={handleNewOpportunity} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+    
+    <lightning-card>
+        <div class="slds-var-p-around_small">
+            <div onitemregister={handleItemRegister}>
+                <c-custom-datatable class="slds-max-medium-table_stacked" onvaluechange={handleValueChange}
+                    oncellchange={handleCellChange} data={records} columns={columns} show-row-number-column
+                    key-field="Id" draft-values={draftValues} onsave={handleSave} data-record="Id" onedit={handleEdit}
+                     oncancel={handleCancel} onrowaction={handleRowActions}>
+                </c-custom-datatable>
+            </div>
+        </div>
+        <div class="showSpinner" if:true={showSpinner}>
+            <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+        </div>
+    </lightning-card>
+
+
+    
+        <template if:true={editOpportunities} >
+            <section  role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+             aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" size="medium"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Edit Opportunity</h2>
+                </header>
+    
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <lightning-record-edit-form record-id={currentRecordId} object-api-name="Opportunity" onsuccess={handleSuccess} onsubmit ={handleSubmit} >
+                        <lightning-messages>
+                        </lightning-messages>
+                        <lightning-input-field field-name='Name'></lightning-input-field>
+                        <lightning-input-field field-name='AccountId'></lightning-input-field>
+                        <lightning-input-field field-name='StageName'></lightning-input-field>
+                        <lightning-input-field field-name='CloseDate'></lightning-input-field>
+                        <lightning-input-field field-name='Amount'></lightning-input-field>
+    
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                            <button class="slds-button slds-button_brand" type="submit">Save</button>
+                            </footer>
+                    </lightning-record-edit-form>
+                </div>
+                </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+
+
+        <template if:true={newOpportunities} >
+            <section  role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+             aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" size="medium"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-03" class="slds-modal__title slds-hyphenate">New Opportunity</h2>
+                </header>
+    
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                    <lightning-record-edit-form object-api-name="Opportunity" onsuccess={handleSuccess} onsubmit ={handleSubmit} >
+                        <lightning-messages>
+                        </lightning-messages>
+                        <lightning-input-field field-name='Name'></lightning-input-field>
+                        <lightning-input-field field-name='AccountId'></lightning-input-field>
+                        <lightning-input-field field-name='StageName'></lightning-input-field>
+                        <lightning-input-field field-name='CloseDate'></lightning-input-field>
+                        <lightning-input-field field-name='Amount'></lightning-input-field>   
+                    </lightning-record-edit-form>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                        <button class="slds-button slds-button_neutral" onclick={handleSaweAndNew}>Sawe & New</button>
+                        <button class="slds-button slds-button_brand" onclick={HandleSawe}>Save</button>
+                        </footer>
+                </div>
+                </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+
+        <template if:true={changeOwner}>
+            <div class="Delete modal">
+                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small"
+                    aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+    
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={closeModal}>
+                                <lightning-icon icon-name="utility:close" size="medium">
+                                </lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Change Opportunity Owner</h2>
+                        </header>
+    
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <lightning-input name="enter-search" label="Search" type="search"></lightning-input>
+                            <lightning-checkbox-group name="Checkbox Group" label="Checkbox Group" options={options} value={value} onchange={handleChange}></lightning-checkbox-group>
+                            <p>The new owner will also become the owner of these records related to Burlington Textiles Weaving Plant Generatora that are owned by you.</p>
+                            <p>Notes and attachments</p>
+                            <p>Open activities</p>
+                        </div>
+    
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                            <button class="slds-button slds-button_brand" onclick={submitChangeOwner}>Submit</button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open" onclick={closeModal}></div>
+            </div>
+        </template>
+
+</template>

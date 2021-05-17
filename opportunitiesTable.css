@@ -1,0 +1,19 @@
+/* .button_icon_Edit{
+   
+    
+    
+    margin-bottom: -10px;
+    border-bottom:solid, rgb(221, 219, 218);
+    border-radius: 0.25rem;
+    background-clip: padding-box;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);
+    border: solid ,rgb(221, 219, 218);
+} */
+.buttonBar{
+    background: rgb(243, 242, 242);
+    display:flex;
+    padding-right: 20px;
+    margin-top: -15px;
+    padding-bottom: 10px;
+    padding-left: 65px;
+}
